@@ -1,5 +1,4 @@
 
-// canvas 2 variables
 //key
 var keys; 
 var moveKeyStartX;
@@ -9,29 +8,30 @@ var moveKeyEndY;
 var keyLocation;
 
 
-var canvasNum;
+var canvas;
 var room;
+var lock; 
+var mute; 
 
 //fishtank
 var fish;
-var movedreamStartX;
-var movedreamStartY;
-var movedreamMiddleX; 
-var movedreamMiddleY;
-var movedreamEndX;
-var movedreamEndY;
-var dreamLocation;  
+var movefishtartX;
+var movefishStartY;
+var movefishMiddleX; 
+var movefishMiddleY;
+var movefishEndX;
+var movefishEndY;
+var fishLocation;  
 
 //chem
-var clock;
-var moveclockStartX;
-var moveclockStartY;
-var moveclockEndX;
-var moveclockEndY;
-var clockLocation;
+var chem;
+var movechemStartX;
+var movechemStartY;
+var movechemEndX;
+var movechemEndY;
+var chemLocation;
 
-var toys; 
-var table;
+
 
 function preload() 
 {  
@@ -43,13 +43,7 @@ function preload()
     
   fish = loadImage('https://dl.dropboxusercontent.com/s/6gr76oennbxy1k8/fish.png?dl=0');
     
-  clock = loadImage('https://dl.dropboxusercontent.com/s/xd9hdlu43rss6dq/glassware16x7.png?dl=0');
-    
-  toys = loadImage('https://dl.dropboxusercontent.com/s/4b2a4d0hlwyqmbz/digital-wall-clock-blue.png?dl=0');
-    
-  puppy = loadImage('https://dl.dropboxusercontent.com/s/udj6r0p3urn0jh4/puppy.png?dl=0');
-  
-  table = loadImage('https://dl.dropboxusercontent.com/s/yic1hr1ttfzjyhr/table_PNG6976.png?dl=0');
+  chem = loadImage('https://dl.dropboxusercontent.com/s/xd9hdlu43rss6dq/glassware16x7.png?dl=0');
 }
 
 
@@ -57,14 +51,10 @@ function setup()
 {
     createCanvas(800,600);
   
-    // canvas 1 variables
+    
  
 
     // marks the location of the key
-    // 1 - is original location
-    // 2 - key is in transition
-    // 3 - key is in user location
-    // 4 - key is reset
     keyLocation = 1;
   
     // starting and ending locations of the key
@@ -73,43 +63,61 @@ function setup()
     moveKeyEndX = 20;
     moveKeyEndY = 460;
   
- dreamLocation = 1;
+ fishLocation = 1;
 
   // starting and ending locations of the key
-  movedreamStartX = 550;
-  movedreamStartY = 100;
-  movedreamMiddleX = 300 
-  movedreamMiddleY = 150
-  movedreamEndX = 20;
-  movedreamEndY = 340;
+  movefishStartX = 550;
+  movefishStartY = 100;
+  movefishMiddleX = 300 
+  movefishMiddleY = 150
+  movefishEndX = 20;
+  movefishEndY = 340;
   
-  clockLocation = 1;
+  chemLocation = 1;
 
   // starting and ending locations of the key
-  moveclockStartX = 450;
-  moveclockStartY = 100;
-  moveclockEndX = 25;
-  moveclockEndY = 525;
+  movechemStartX = 450;
+  movechemStartY = 100;
+  movechemEndX = 25;
+  movechemEndY = 525;
   
 
     // which canvas is in focus by default
     canvas = 3;
+    mute = 1;
+    lock = false;
 }
 
 function draw()
 {
       if (canvas == 3)
-    {
-        canvas3();
-    }
+  {
+    canvas3();
+  }
+  else if (canvas == 2)
+  {
+    canvas2();
+  }
    
-    paintCanvasButtons();
+}
+
+function drawCanvasButtons()
+{
+  
+  if (lock == false && mouseX > 139 && mouseX < 200 && mouseY > 455 && mouseY < 592 && mouseIsPressed == true)
+  {
+    lock = true;
+    if (canvas == 3)
+    {
+      canvas = 2;      
+    }
+  } 
 }
 
 function canvas3()
 {
   background(room,0,0);
-
+  drawCanvasButtons();
   itemGrid();
   image(table,100,550,200,200);
   image(bag,100,450,150,150);
@@ -118,34 +126,33 @@ function canvas3()
   
    // if keyLocation is 1 draw the key in the original locaiton
 
-  if (clockLocation == 1)
+  if (chemLocation == 1)
   {
-    moveclockStartX = 450;
-    moveclockStartY = 130;
-    image(clock,moveclockStartX,moveclockStartY,60,60);
+    movechemStartX = 450;
+    movechemStartY = 130;
+    image(chem,movechemStartX,movechemStartY,60,60);
   }
-  else if (clockLocation == 2)
+  else if (chemLocation == 2)
   {
-    image(clock,moveclockStartX,moveclockStartY,60,60);
+    image(chem,movechemStartX,movechemStartY,60,60);
 
     // move the key from the starting point to the ending point
-    if (moveclockStartX > moveclockEndX)
+    if (movechemStartX > movechemEndX)
     {
-      moveclockStartX = moveclockStartX - 5;
+      movechemStartX = movechemStartX - 5;
     }
-    if (moveclockStartY < moveclockEndY)
+    if (movechemStartY < movechemEndY)
     {
-      moveclockStartY = moveclockStartY + 5;
+      movechemStartY = movechemStartY + 5;
     }
-    if (!(moveclockStartX > moveclockEndX && moveclockStartY < moveclockEndY))
+    if (!(movechemStartX > movechemEndX && movechemStartY < movechemEndY))
     {
-      clockLocation = 3;
+      chemLocation = 3;
     }
   }
-  else if (clockLocation == 3)
+  else if (chemLocation == 3)
   {
-
-    image(clock,moveclockEndX,moveclockEndY,60,60);
+    image(chem,movechemEndX,movechemEndY,60,60);
   }  
 
   
@@ -179,82 +186,82 @@ function canvas3()
     image(keys,moveKeyEndX,moveKeyEndY,70,30);
   }
   
-  if (dreamLocation == 1)
+  if (fishLocation == 1)
   {
-    movedreamStartX = 530;
-    movedreamStartY = 105
-    image(dreamcatcher,movedreamStartX,movedreamStartY,75,80);
+    movefishStartX = 530;
+    movefishStartY = 105
+    image(fish,movefishStartX,movefishStartY,75,80);
   }
-  else if (dreamLocation == 2)
+  else if (fishLocation == 2)
   {
-    image(dreamcatcher,movedreamStartX,movedreamStartY,75,80);
+    image(fish,movefishStartX,movefishStartY,75,80);
 
-    if (movedreamStartX > movedreamMiddleX)
+    if (movefishStartX > movefishMiddleX)
     {
-      movedreamStartX = movedreamStartX - 3.5;
+      movefishStartX = movefishStartX - 3.5;
     }
-    if (movedreamStartY < movedreamMiddleY)
+    if (movefishStartY < movefishMiddleY)
     {
-      movedreamStartY = movedreamStartY + 1.5;
+      movefishStartY = movefishStartY + 1.5;
     }
-    if (!(movedreamStartX > movedreamMiddleX && movedreamStartY < movedreamMiddleY))
+    if (!(movefishStartX > movefishMiddleX && movefishStartY < movefishMiddleY))
     {
-      dreamLocation = 3;
+      fishLocation = 3;
     }
   }
-  else if (dreamLocation == 3)
+  else if (fishLocation == 3)
   {
-    image(dreamcatcher,movedreamMiddleX,movedreamMiddleY,205,300);
-    movedreamMiddleX = 300;
-    movedreamMiddleY = 150;
+    image(fish,movefishMiddleX,movefishMiddleY,205,300);
+    movefishMiddleX = 300;
+    movefishMiddleY = 150;
   }
-  else if (dreamLocation == 4)
+  else if (fishLocation == 4)
   {
-    image(dreamcatcher,movedreamMiddleX,movedreamMiddleY,205,300);
+    image(fish,movefishMiddleX,movefishMiddleY,205,300);
 
     // move the key from the starting point to the ending point
-    if (movedreamMiddleX > movedreamEndX)
+    if (movefishMiddleX > movefishEndX)
     {
-      movedreamMiddleX = movedreamMiddleX - 6;
+      movefishMiddleX = movefishMiddleX - 6;
     }
-    if (movedreamMiddleY < movedreamEndY)
+    if (movefishMiddleY < movefishEndY)
     {
-      movedreamMiddleY = movedreamMiddleY + 1.5;
+      movefishMiddleY = movefishMiddleY + 1.5;
     }
-    if (!(movedreamMiddleX > movedreamEndX && movedreamMiddleY < movedreamEndY))
+    if (!(movefishMiddleX > movefishEndX && movefishMiddleY < movefishEndY))
     {
-      dreamLocation = 5;
+      fishLocation = 5;
     }
   }
-  else if (dreamLocation == 5)
+  else if (fishLocation == 5)
   {
-  image(dreamcatcher,movedreamEndX,movedreamEndY,75,80);
+  image(fish,movefishEndX,movefishEndY,75,80);
   }
   
   
   
-  if (mouseX > 450 && mouseX < 450+60 && mouseY > 100 && mouseY < 100+60)
+  if (mouseX > 450 && mouseX < 450+60 && mouseY > 133 && mouseY < 133+60)
   {
     cursor(HAND);
-    if (mouseIsPressed == true && clockLocation == 1)
+    if (mouseIsPressed == true && chemLocation == 1)
     {
-      clockLocation = 2;
+      chemLocation = 2;
     }
   }
   else if (mouseX > 550 && mouseX < 550+65 && mouseY > 111 && mouseY < 111+120)
   {
     cursor(HAND);
-    if (mouseIsPressed == true && dreamLocation == 1)
+    if (mouseIsPressed == true && fishLocation == 1)
     {
-      dreamLocation = 2;
+      fishLocation = 2;
     }
   }
   else if (mouseX > 319 && mouseX < 319+195 && mouseY > 177 && mouseY < 177+360)
   {
     cursor(HAND);
-    if (mouseIsPressed == true && dreamLocation == 3)
+    if (mouseIsPressed == true && fishLocation == 3)
     {
-      dreamLocation = 4;
+      fishLocation = 4;
     }
   }
   else if (mouseX > 300 && mouseX < 300+70 && mouseY > 540 && mouseY < 540+30)
@@ -304,32 +311,11 @@ function itemGrid()
 
 }
 
-function paintCanvasButtons()
+function canvas2()
 {
-   myX = -25;
-   myY = -275;
-  
-   if (canvas == 3)
-   {
-     strokeWeight(5);
-   }
-   else
-   {
-     strokeWeight(1);
-   }
-   fill(255,255,255);
-   rect(myX+30,myY+300,100,50);
-   fill(0,0,0);
-   text("Canvas 3",myX+50,myY+330);
-
-  
-   if (mouseX > myX+290 && mouseX < myX+290+100 && mouseY > myY+300 && mouseY < myY+300+50 && mouseIsPressed)
-   {
-     canvas = 3;
-     keyLocation = 1;
-   }
-
+  background(230,255,255);
 }
+
 
 
 
